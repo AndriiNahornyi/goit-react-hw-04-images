@@ -1,20 +1,6 @@
-// Компонент приймає один проп onSubmit – функцію для передачі значення інпута під час сабміту форми.
-// Створює DOM - елемент наступної структури.
-// <header class="searchbar">
-//   <form class="form">
-//     <button type="submit" class="button">
-//       <span class="button-label">Search</span>
-//     </button>
-//     <input
-//       class="input"
-//       type="text"
-//       autocomplete="off"
-//       autofocus
-//       placeholder="Search images and photos"
-//     />
-//   </form>
-// </header>
 import { Component } from 'react';
+import css from './Searchbar.module.css';
+import PropTypes from 'prop-types';
 export class Searchbar extends Component {
   state = {
     query: '',
@@ -33,16 +19,16 @@ export class Searchbar extends Component {
   render() {
     return (
       <>
-        <header className="searchbar">
-          <form className="form" onSubmit={this.onSubmit}>
-            <button type="submit" className="button">
+        <header className={css.Searchbar}>
+          <form className={css.SearchForm} onSubmit={this.onSubmit}>
+            <button type="submit" className="SearcFormButton">
               <span className="button-label">Search</span>
             </button>
 
             <input
+              className={css.SearchFormInput}
               onChange={this.handleChange}
-              // value={}
-              className="input"
+              value={this.state.query.trim()}
               type="text"
               autoComplete="off"
               autoFocus
@@ -54,3 +40,6 @@ export class Searchbar extends Component {
     );
   }
 }
+Searchbar.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
+};

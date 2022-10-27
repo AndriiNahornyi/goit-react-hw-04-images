@@ -1,57 +1,61 @@
-// Список карток зображень. Створює DOM-елемент наступної структури.
-// <ul class="gallery">
-//   <!-- Набір <li> із зображеннями -->
-// </ul>
-
 import { Component } from 'react';
-// import { Searchbar } from 'components/Searchbar';
-// import { Button } from 'components/Button';
-// import { Modal } from 'components/Modal';
-// import { Loader } from 'components/Loader';
-
+import { Button } from '../Button';
+import { Loader } from '../Loader';
+import { ImageGalleryItem } from '../ImageGalleryItem';
 import { getGalleryApi } from 'services/Api';
+import css from './ImageGallery.module.css';
+
+import PropTypes from 'prop-types';
 export class ImageGallery extends Component {
   state = {
     images: [],
     page: 1,
+    isLoading: false,
   };
   async componentDidUpdate(prevProps, prevState) {
-    if (prevProps.query !== this.props.query) {
+    if (prevProps.query !== this.props.query && this.props.query !== '') {
+      this.setState({ isLoading: true });
       const data = await getGalleryApi(this.props.query);
       this.setState({
         images: data.hits,
+        //скинути кількість попередніх запитів
+        page: 1,
+        isLoading: false,
       });
     }
-    if (prevState.page !== this.state.page) {
-      // зробити запит на бекенд накшталт рядки 20-23, але з оновленою сторінкою
+    if (prevState.page !== this.state.page && this.state.page !== 1) {
+      this.setState({ isLoading: true });
+      // запит на бекенд накшталт рядків 18-24, але з оновленою сторінкою
       const data = await getGalleryApi(this.props.query, this.state.page);
-      console.log(data);
-
       this.setState(prev => ({
         images: [...prev.images, ...data.hits],
+        isLoading: false,
       }));
-      // this.setState({ page: this.state.page }); - не треба
     }
   }
-
   loadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
-
   render() {
     return (
       <>
-        <ul className="gallery">
+        {this.state.isLoading && <Loader />}
+        <ul className={css.ImageGallery}>
           {this.state.images.map(image => (
-            <li key={image.id}>
-              <img src={image.webformatURL} alt="littleImage" />
-            </li>
+            <ImageGalleryItem
+              key={image.id}
+              toggleModal={this.props.toggleModal}
+              url={image.webformatURL}
+              largeImage={image.largeImageURL}
+            />
           ))}
         </ul>
-        <button onClick={this.loadMore} type="button">
-          Load more
-        </button>
+        <Button loadMore={this.loadMore} />
       </>
     );
   }
 }
+ImageGallery.propTypes = {
+  query: PropTypes.string.isRequired,
+  toggleModal: PropTypes.func.isRequired,
+};

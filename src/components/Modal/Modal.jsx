@@ -1,8 +1,36 @@
-// Під час кліку на елемент галереї повинно відкриватися модальне вікно з темним оверлеєм і відображатися велика версія зображення. Модальне вікно повинно закриватися по натисканню клавіші ESC або по кліку на оверлеї.
-// Зовнішній вигляд схожий на функціонал цього VanillaJS-плагіна, тільки замість білого модального вікна рендериться зображення (у прикладі натисніть Run).
+import { Component } from 'react';
+import PropTypes from 'prop-types';
+import css from './Modal.module.css';
 
-// <div class="overlay">
-//   <div class="modal">
-//     <img src="" alt="" />
-//   </div>
-// </div>
+export class Modal extends Component {
+  componentDidMount() {
+    document.addEventListener('keydown', this.keyClose);
+  }
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.keyClose);
+  }
+  keyClose = e => {
+    if (e.key === 'Escape') {
+      this.props.onClose();
+    }
+  };
+  overlayClick = e => {
+    if (e.target === e.currentTarget) {
+      this.props.onClose();
+    }
+  };
+
+  render() {
+    return (
+      <div onClick={this.overlayClick} className={css.Overlay}>
+        <div className={css.Modal}>
+          <img src={this.props.largeImageURL} alt="" />
+        </div>
+      </div>
+    );
+  }
+}
+
+Modal.propTypes = {
+  largeImageURL: PropTypes.string.isRequired,
+};
