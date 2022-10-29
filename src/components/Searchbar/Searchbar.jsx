@@ -1,17 +1,15 @@
-import { useState } from 'react';
 import css from './Searchbar.module.css';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 export const Searchbar = ({ handleSubmit }) => {
-  const [query, setQuery] = useState('');
-
-  const handleChange = event => {
-    const { value } = event.target;
-    setQuery(value);
-  };
+  const [value, setValue] = useState('');
   const onSubmit = event => {
     event.preventDefault();
-    handleSubmit(query);
+    handleSubmit(event.target.query.value);
+  };
+  const onHandleChage = event => {
+    setValue(event.target.value.trim());
   };
 
   return (
@@ -24,8 +22,9 @@ export const Searchbar = ({ handleSubmit }) => {
 
           <input
             className={css.SearchFormInput}
-            onChange={handleChange}
-            value={query.trim()}
+            name={'query'}
+            onChange={onHandleChage}
+            value={value}
             type="text"
             autoComplete="off"
             autoFocus

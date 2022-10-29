@@ -13,7 +13,6 @@ const galleryApi = axios.create({
     image_type: 'photo',
     orientation: 'horizontal',
     per_page: 12,
-    q: 'cat',
   },
 });
 
