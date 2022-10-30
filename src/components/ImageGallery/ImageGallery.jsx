@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import css from './ImageGallery.module.css';
 
 export const ImageGallery = ({ images, toggleModal, isLoading, loadMore }) => {
-  console.log('images :>> ', images);
   return (
     <>
       {images.length > 0 && (
